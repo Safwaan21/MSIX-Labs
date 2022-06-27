@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.ApplicationModel;
+using MyEmployees.Helpers;
+using Windows.ApplicationModel.Background;
 
 namespace ExportDataLibrary
 {
@@ -34,6 +36,15 @@ namespace ExportDataLibrary
             LoadData();
             CheckKioskMode();
             //await CheckForUpdates();
+            RegisterBackgroundTask();
+        }
+
+        private void RegisterBackgroundTask()
+        {
+            BackgroundUpdateRegister registerBackgroundUpdate = new BackgroundUpdateRegister();
+            SystemTrigger trigger = new SystemTrigger(SystemTriggerType.TimeZoneChange, true);
+
+            registerBackgroundUpdate.RegisterBackgroundTaskWithSystem("ComBackgroundUpdateTask.ComBackgroundUpdate", "BackgroundUpdater", trigger);
         }
 
         private async Task CheckForUpdates()
