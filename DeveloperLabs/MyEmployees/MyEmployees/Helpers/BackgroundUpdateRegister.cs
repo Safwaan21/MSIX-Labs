@@ -24,25 +24,28 @@ namespace MyEmployees.Helpers
         /// <param name="taskEntryPoint">Task entry point for the background task.</param>
         /// <param name="name">A name for the background task.</param>
         /// <param name="trigger">The trigger for the background task.</param>
-        public IBackgroundTaskRegistration RegisterBackgroundTaskWithSystem(string taskEntrypoint, string taskName, IBackgroundTrigger trigger)
+        public void RegisterBackgroundTaskWithSystem(string taskEntrypoint, string taskName, IBackgroundTrigger trigger)
         {
+            // If the task is already active, the function will be returned here rather than registering another instance of it
             foreach (var regIterator in BackgroundTaskRegistration.AllTasks)
             {
                 if (regIterator.Value.Name == taskName)
                 {
-                    return regIterator.Value;
+                    return;
                 }
             }
 
+            // Build an instance of the task with taskEntrypoint, name, and trigger
             BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
-
             builder.SetTrigger(trigger);
             builder.Name = taskName;
 
-            // **** Want to use builder.SetTaskEntryPointClsid(entryPointClsid);
+            Guid backgroundUpdGuid = new Guid("095D47F4-030E-4AFF-8963-9CB33D63F682");
+            builder.SetTaskEntryPointClsid(typeof(ComBackgroundUpdate).GUID);
 
+
+            // Register the task if it has not been registered
             BackgroundTaskRegistration registration;
-
             try
             {
                 registration = builder.Register();
@@ -53,7 +56,25 @@ namespace MyEmployees.Helpers
                 registration = null;
             }
 
-            return registration;
+            RegisterProcessForBackgroundTask(typeof(ComBackgroundUpdate));
+        }
+
+        /// <summary>
+        /// This method register this process as the COM server for the specified
+        /// background task class until this process exits or is terminated.
+        ///
+        /// The process that is responsible for handling a particular background
+        /// task must call RegisterTypeForComClients on the IBackgroundTask
+        /// derived class. So long as this process is registered with the
+        /// aforementioned API, it will be the process that has instances of the
+        /// background task invoked.
+        /// </summary>
+        static void RegisterProcessForBackgroundTask(Type backgroundTaskClass)
+        {
+            RegistrationServices registrationServices = new RegistrationServices();
+            registrationServices.RegisterTypeForComClients(backgroundTaskClass,
+                                                           RegistrationClassContext.LocalServer,
+                                                           RegistrationConnectionType.MultipleUse);
         }
 
     }

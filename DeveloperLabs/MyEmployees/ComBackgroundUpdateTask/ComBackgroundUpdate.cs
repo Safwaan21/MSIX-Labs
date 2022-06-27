@@ -13,6 +13,7 @@ namespace ComBackgroundUpdateTask
 {
     [ComVisible(true)]
     [Guid("095D47F4-030E-4AFF-8963-9CB33D63F682")]
+    // Implements the background updater task using the IBackgroundTask interface
     public sealed class ComBackgroundUpdate : IBackgroundTask
     {
         private volatile int cleanupTask = 0;
@@ -23,7 +24,7 @@ namespace ComBackgroundUpdateTask
             // Add the cancellation handler.
             taskInstance.Canceled += OnCanceled;
 
-            // Check for Update
+            // Check for Update if and only if there has not been a cancellation
             if(cleanupTask == 0)
             {
                 // Check version data to see if a new update exists
@@ -36,6 +37,7 @@ namespace ComBackgroundUpdateTask
                 // If a new version exists, update the application
                 if(newVersion.CompareTo(currentVersion) > 0)
                 {
+                    // Adds the newer package using the AddPackageAsync() method
                     PackageManager packageManager = new PackageManager();
                     IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> deploymentOperation = null;
                     Uri packageUri = new Uri(inputPackageUri);
