@@ -11,20 +11,19 @@ using Windows.ApplicationModel.Background;
 // Required for COM registration API (RegisterTypeForComClients).
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace MyEmployees.Helpers
 {
-
     class BackgroundUpdateRegister
     {
 
         /// <summary>
         /// Register a background task with the specified taskEntryPoint, name, and trigger
         /// </summary>
-        /// <param name="taskEntryPoint">Task entry point for the background task.</param>
         /// <param name="name">A name for the background task.</param>
         /// <param name="trigger">The trigger for the background task.</param>
-        public void RegisterBackgroundTaskWithSystem(string taskEntrypoint, string taskName, IBackgroundTrigger trigger)
+        public void RegisterBackgroundTaskWithSystem(string taskName, IBackgroundTrigger trigger)
         {
             // If the task is already active, the function will be returned here rather than registering another instance of it
             foreach (var regIterator in BackgroundTaskRegistration.AllTasks)
@@ -39,23 +38,19 @@ namespace MyEmployees.Helpers
             BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
             builder.SetTrigger(trigger);
             builder.Name = taskName;
-
-            Guid backgroundUpdGuid = new Guid("095D47F4-030E-4AFF-8963-9CB33D63F682");
             builder.SetTaskEntryPointClsid(typeof(ComBackgroundUpdate).GUID);
-
 
             // Register the task if it has not been registered
             BackgroundTaskRegistration registration;
-            try
-            {
-                registration = builder.Register();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                registration = null;
-            }
-
+            //try
+            //{
+            registration = builder.Register();
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //    registration = null;
+            //}
             RegisterProcessForBackgroundTask(typeof(ComBackgroundUpdate));
         }
 

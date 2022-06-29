@@ -45,8 +45,8 @@
 		<Extensions>
 			<com:Extension Category="windows.comServer">
 				<com:ComServer>
-					<com:ExeServer Executable="MyEmployees\MyEmployees.exe" DisplayName="BackgroundTaskWinMainComSUpdater">
-						<com:Class Id="095D47F4-030E-4AFF-8963-9CB33D63F682" DisplayName="Background Update Task" />
+					<com:ExeServer Executable="MyEmployees\MyEmployees.exe" DisplayName="BackgroundUpdater">
+						<com:Class Id="095D47F4-030E-4AFF-8963-9CB33D63F682" DisplayName="BackgroundUpdater" />
 					</com:ExeServer>
 				</com:ComServer>
 			</com:Extension>

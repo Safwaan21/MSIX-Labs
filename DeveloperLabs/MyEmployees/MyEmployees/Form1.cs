@@ -42,9 +42,9 @@ namespace ExportDataLibrary
         private void RegisterBackgroundTask()
         {
             BackgroundUpdateRegister registerBackgroundUpdate = new BackgroundUpdateRegister();
-            SystemTrigger trigger = new SystemTrigger(SystemTriggerType.TimeZoneChange, true);
+            TimeTrigger trigger = new TimeTrigger(15, false);
 
-            registerBackgroundUpdate.RegisterBackgroundTaskWithSystem("ComBackgroundUpdateTask.ComBackgroundUpdate", "BackgroundUpdater", trigger);
+            registerBackgroundUpdate.RegisterBackgroundTaskWithSystem("BackgroundUpdater", trigger);
         }
 
         private async Task CheckForUpdates()
